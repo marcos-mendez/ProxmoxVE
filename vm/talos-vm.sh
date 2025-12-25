@@ -340,7 +340,7 @@ YAML
 
   # Create EFI disk (Proxmox allocates volume automatically)
   info "Adding EFI disk…"
-  qm set "$VMID" --efidisk0 "${STORAGE}:0,efitype=4m,pre-enrolled-keys=1" >/dev/null
+  qm set "$VMID" --efidisk0 "${STORAGE}:0,efitype=4m,pre-enrolled-keys=0" >/dev/null
 
   # Import Talos disk
   info "Importing Talos disk into storage…"
