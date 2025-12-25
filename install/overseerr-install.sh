@@ -13,10 +13,6 @@ setting_up_container
 network_check
 update_os
 
-msg_info "Installing Dependencies"
-$STD apt install -y ca-certificates
-msg_ok "Installed Dependencies"
-
 NODE_VERSION="22" NODE_MODULE="yarn@latest" setup_nodejs
 fetch_and_deploy_gh_release "overseerr" "sct/overseerr" "tarball"
 
@@ -45,9 +41,4 @@ msg_ok "Created Service"
 
 motd_ssh
 customize
-
-msg_info "Cleaning up"
-$STD apt -y autoremove
-$STD apt -y autoclean
-$STD apt -y clean
-msg_ok "Cleaned"
+cleanup_lxc

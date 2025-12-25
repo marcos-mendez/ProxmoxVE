@@ -12,6 +12,7 @@ catch_errors
 setting_up_container
 network_check
 update_os
+setup_hwaccel
 
 msg_info "Installing Dependencies"
 $STD apt install -y \
@@ -62,11 +63,13 @@ install -d -m 755 \
   /data/uploads/{m3us,epgs} \
   /data/{m3us,epgs}
 chown -R root:root /data
+DJANGO_SECRET=$(openssl rand -base64 48 | tr -dc 'a-zA-Z0-9' | cut -c1-50)
 export DATABASE_URL="postgresql://${DB_USER}:${DB_PASS}@localhost:5432/${DB_NAME}"
 export POSTGRES_DB=$DB_NAME
 export POSTGRES_USER=$DB_USER
 export POSTGRES_PASSWORD=$DB_PASS
 export POSTGRES_HOST=localhost
+export DJANGO_SECRET_KEY=$DJANGO_SECRET
 $STD uv run python manage.py migrate --noinput
 $STD uv run python manage.py collectstatic --noinput
 cat <<EOF >/opt/dispatcharr/.env
@@ -76,6 +79,7 @@ POSTGRES_USER=$DB_USER
 POSTGRES_PASSWORD=$DB_PASS
 POSTGRES_HOST=localhost
 CELERY_BROKER_URL=redis://localhost:6379/0
+DJANGO_SECRET_KEY=$DJANGO_SECRET
 EOF
 cd /opt/dispatcharr/frontend
 $STD npm install --legacy-peer-deps
@@ -260,9 +264,4 @@ msg_ok "Created Services"
 
 motd_ssh
 customize
-
-msg_info "Cleaning up"
-$STD apt -y autoremove
-$STD apt -y autoclean
-$STD apt -y clean
-msg_ok "Cleaned"
+cleanup_lxc

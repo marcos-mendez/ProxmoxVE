@@ -24,7 +24,7 @@ $STD apt-get install -y \
 #php-{ffi,opcache,redis,zip,pdo-sqlite,bcmath,pdo,curl,dom,fpm}
 msg_ok "Installed Dependencies"
 
-PHP_VERSION="8.3" PHP_FPM=YES PHP_MODULE="ffi,opcache,redis,zip,pdo-sqlite,bcmath,pdo,curl,dom,fpm" setup_php
+PHP_VERSION="8.4" PHP_FPM=YES PHP_MODULE="ffi,opcache,redis,zip,pdo-sqlite,bcmath,pdo,curl,dom,fpm" setup_php
 setup_composer
 NODE_VERSION="22" setup_nodejs
 fetch_and_deploy_gh_release "meilisearch" "meilisearch/meilisearch" "binary"
@@ -190,8 +190,4 @@ msg_ok "Created Service"
 
 motd_ssh
 customize
-
-msg_info "Cleaning up"
-$STD apt-get -y autoremove
-$STD apt-get -y autoclean
-msg_ok "Cleaned"
+cleanup_lxc

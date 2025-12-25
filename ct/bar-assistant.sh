@@ -34,6 +34,8 @@ function update_script() {
     systemctl stop nginx
     msg_ok "Stopped nginx"
 
+    PHP_VERSION="8.4" PHP_FPM=YES PHP_MODULE="ffi,opcache,redis,zip,pdo-sqlite,bcmath,pdo,curl,dom,fpm" setup_php
+
     msg_info "Backing up Bar Assistant"
     mv /opt/bar-assistant /opt/bar-assistant-backup
     msg_ok "Backed up Bar Assistant"
@@ -54,15 +56,12 @@ function update_script() {
     $STD php artisan route:cache
     $STD php artisan event:cache
     chown -R www-data:www-data /opt/bar-assistant
+    rm -rf /opt/bar-assistant-backup
     msg_ok "Updated Bar-Assistant"
 
     msg_info "Starting nginx"
     systemctl start nginx
     msg_ok "Started nginx"
-
-    msg_info "Cleaning up"
-    rm -rf /opt/bar-assistant-backup
-    msg_ok "Cleaned"
   fi
 
   if check_for_gh_release "vue-salt-rim" "karlomikus/vue-salt-rim"; then
@@ -81,15 +80,12 @@ function update_script() {
     cd /opt/vue-salt-rim
     $STD npm install
     $STD npm run build
+    rm -rf /opt/vue-salt-rim-backup
     msg_ok "Updated Vue Salt Rim"
 
     msg_info "Starting nginx"
     systemctl start nginx
     msg_ok "Started nginx"
-
-    msg_info "Cleaning up"
-    rm -rf /opt/vue-salt-rim-backup
-    msg_ok "Cleaned"
   fi
 
   if check_for_gh_release "meilisearch" "meilisearch/meilisearch"; then

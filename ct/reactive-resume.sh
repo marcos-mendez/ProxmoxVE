@@ -33,12 +33,11 @@ function update_script() {
     systemctl stop Reactive-Resume
     msg_ok "Stopped services"
 
-    cp /opt/"$APP"/.env /opt/rxresume.env
-
+    cp /opt/Reactive-Resume/.env /opt/rxresume.env
     fetch_and_deploy_gh_release "Reactive-Resume" "lazy-media/Reactive-Resume" "tarball" "latest" "/opt/Reactive-Resume"
 
-    msg_info "Updating $APP"
-    cd /opt/"$APP"
+    msg_info "Updating Reactive-Resume"
+    cd /opt/Reactive-Resume
     export PUPPETEER_SKIP_DOWNLOAD="true"
     export NEXT_TELEMETRY_DISABLED=1
     export CI="true"
@@ -46,14 +45,15 @@ function update_script() {
     $STD pnpm install --frozen-lockfile
     $STD pnpm run build
     $STD pnpm run prisma:generate
-    mv /opt/rxresume.env /opt/"$APP"/.env
-    msg_ok "Updated $APP"
+    mv /opt/rxresume.env /opt/Reactive-Resume/.env
+    msg_ok "Updated Reactive-Resume"
 
     msg_info "Updating Minio"
     systemctl stop minio
     cd /tmp
     curl -fsSL https://dl.min.io/server/minio/release/linux-amd64/minio.deb -o minio.deb
     $STD dpkg -i minio.deb
+    rm -f /tmp/minio.deb
     msg_ok "Updated Minio"
 
     msg_info "Updating Browserless (Patience)"
@@ -75,16 +75,12 @@ function update_script() {
     $STD npm run build:function
     $STD npm prune production
     mv /opt/browserless.env /opt/browserless/.env
+    rm -f "$brwsr_tmp"
     msg_ok "Updated Browserless"
 
     msg_info "Restarting services"
     systemctl start minio Reactive-Resume browserless
     msg_ok "Restarted services"
-
-    msg_info "Cleaning Up"
-    rm -f /tmp/minio.deb
-    rm -f "$brwsr_tmp"
-    msg_ok "Cleanup Completed"
     msg_ok "Updated successfully!"
   fi
   exit

@@ -13,6 +13,7 @@ var_disk="${var_disk:-8}"
 var_os="${var_os:-debian}"
 var_version="${var_version:-13}"
 var_unprivileged="${var_unprivileged:-1}"
+var_gpu="${var_gpu:-yes}"
 
 header_info "$APP"
 variables
@@ -43,12 +44,6 @@ function update_script() {
     msg_info "Starting Service"
     systemctl start uhf-server
     msg_ok "Started Service"
-
-    msg_info "Cleaning up"
-    $STD apt -y autoremove
-    $STD apt -y autoclean
-    $STD apt -y clean
-    msg_ok "Cleaned"
     msg_ok "Updated successfully!"
   fi
   exit

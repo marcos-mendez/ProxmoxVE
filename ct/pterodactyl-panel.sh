@@ -27,6 +27,7 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
+  setup_mariadb
   CURRENT_PHP=$(php -v 2>/dev/null | awk '/^PHP/{print $2}' | cut -d. -f1,2)
 
   if [[ "$CURRENT_PHP" != "8.4" ]]; then
@@ -70,6 +71,7 @@ EOF
     $STD php artisan migrate --seed --force --no-interaction
     chown -R www-data:www-data /opt/pterodactyl-panel/*
     chmod -R 755 /opt/pterodactyl-panel/storage /opt/pterodactyl-panel/bootstrap/cache/
+    rm -rf "/opt/pterodactyl-panel/panel.tar.gz"
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated $APP to v${RELEASE}"
 
@@ -77,10 +79,6 @@ EOF
     $STD php artisan queue:restart
     $STD php artisan up
     msg_ok "Started Service"
-
-    msg_info "Cleaning up"
-    rm -rf "/opt/pterodactyl-panel/panel.tar.gz"
-    msg_ok "Cleaned"
     msg_ok "Updated successfully!"
   else
     msg_ok "No update required. ${APP} is already at v${RELEASE}"

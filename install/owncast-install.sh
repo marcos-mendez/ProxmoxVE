@@ -13,6 +13,8 @@ setting_up_container
 network_check
 update_os
 
+setup_hwaccel
+
 msg_info "Installing Dependencies (Patience)"
 $STD apt install -y ffmpeg
 msg_ok "Installed Dependencies"
@@ -38,9 +40,4 @@ msg_ok "Created Service"
 
 motd_ssh
 customize
-
-msg_info "Cleaning up"
-$STD apt -y autoremove
-$STD apt -y autoclean
-$STD apt -y clean
-msg_ok "Cleaned"
+cleanup_lxc

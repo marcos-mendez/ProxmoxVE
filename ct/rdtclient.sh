@@ -41,16 +41,13 @@ function update_script() {
     cp -R /opt/rdtc-backup/appsettings.json /opt/rdtc/
     if dpkg-query -W dotnet-sdk-8.0 >/dev/null 2>&1; then
       $STD apt remove --purge -y dotnet-sdk-8.0
-      $STD apt install -y dotnet-sdk-9.0
+      $STD apt install -y aspnetcore-runtime-9.0
     fi
+    rm -rf /opt/rdtc-backup
 
     msg_info "Starting Service"
     systemctl start rdtc
     msg_ok "Started Service"
-
-    msg_info "Cleaning Up"
-    rm -rf /opt/rdtc-backup
-    msg_ok "Cleaned"
     msg_ok "Updated successfully!"
   fi
   exit
